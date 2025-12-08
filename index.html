@@ -632,12 +632,20 @@
             const mobileMenu = document.getElementById('mobile-menu');
 
             menuButton.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
+                // Toggle menu visibility
+                if (mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.remove('hidden');
+                    mobileMenu.classList.add('flex');
+                } else {
+                    mobileMenu.classList.remove('flex');
+                    mobileMenu.classList.add('hidden');
+                }
             });
             
             // Close menu when clicking on links
             mobileMenu.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', () => {
+                    mobileMenu.classList.remove('flex');
                     mobileMenu.classList.add('hidden');
                 });
             });
@@ -645,6 +653,15 @@
             // Close menu when clicking outside
             document.addEventListener('click', (event) => {
                 if (!mobileMenu.contains(event.target) && !menuButton.contains(event.target)) {
+                    mobileMenu.classList.remove('flex');
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+            
+            // Close menu when pressing Escape key
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    mobileMenu.classList.remove('flex');
                     mobileMenu.classList.add('hidden');
                 }
             });
@@ -683,13 +700,13 @@
         </nav>
         
         <!-- FIXED: Mobile Menu with proper positioning and z-index -->
-        <div id="mobile-menu" class="hidden fixed inset-0 z-50 bg-primary-dark bg-opacity-95 shadow-xl">
-            <nav class="flex flex-col space-y-1 px-4 py-3 h-full">
+        <div id="mobile-menu" class="fixed top-0 left-0 right-0 w-full h-full bg-black bg-opacity-95 z-50 hidden">
+            <div class="flex flex-col items-center justify-center h-full p-4">
                 <a href="#hero" class="block py-3 px-3 text-text-muted hover:text-accent-indigo hover:bg-gray-800 rounded-md transition duration-300">Accueil</a>
                 <a href="#content" class="block py-3 px-3 text-text-muted hover:text-accent-indigo hover:bg-gray-800 rounded-md transition duration-300">Catalogue</a>
                 <a href="#test-iptv" class="block py-3 px-3 text-text-muted hover:text-accent-indigo hover:bg-gray-800 rounded-md transition duration-300">Test IPTV</a>
                 <a href="#pricing" class="block py-3 px-3 text-text-muted hover:text-accent-indigo hover:bg-gray-800 rounded-md transition duration-300">Tarifs</a>
-            </nav>
+            </div>
         </div>
 
         <div id="custom-modal" class="fixed inset-0 bg-black bg-opacity-70 z-50 hidden flex items-center justify-center p-4">
