@@ -448,18 +448,18 @@
             document.getElementById('custom-modal').classList.add('hidden');
         }
 
-        function handleTestForm(event) {
-            event.preventDefault();
-            const name = event.target.name.value;
-            const country = event.target.country.value;
-            const email = event.target.email.value;
+        function handleTestRequest() {
+            const name = document.getElementById('name').value;
+            const country = document.getElementById('country').value;
+            const email = document.getElementById('email').value;
 
             if (email && name && country) {
-                console.log(`Test demandé par: ${name}, Pays: ${country}, Email: ${email}`);
-                showModal('Demande Reçue !', 'Merci ! Nous avons bien reçu votre demande de test. Veuillez vérifier votre boîte de réception (et vos spams) pour votre accès 24H.');
-                event.target.reset();
+                const subject = encodeURIComponent(`Demande de test IPTV FrancyHostinger - ${name}`);
+                const body = encodeURIComponent(`Bonjour,\n\nJe souhaite recevoir un test gratuit de 24H.\n\nNom: ${name}\nPays: ${country}\nEmail: ${email}\n\nMerci!`);
+                
+                window.location.href = `mailto:contactfrancy3@gmail.com?subject=${subject}&body=${body}`;
             } else {
-                showModal('Erreur', 'Veuillez remplir tous les champs obligatoires.');
+                showModal('Erreur', 'Veuillez remplir tous les champs.');
             }
         }
 
@@ -504,7 +504,7 @@
             const duplicatedPosters = [...posters, ...posters]; 
             track.innerHTML = duplicatedPosters.map(generateItem).join('');
             
-            // NEW APPROACH: Add event listeners to the container
+            // NEW APPROACH: Add event listeners to container
             const container = track.parentElement;
             
             // Pause on mouseenter
@@ -555,7 +555,7 @@
             const duplicatedPosters = [...posters, ...posters]; 
             track.innerHTML = duplicatedPosters.map(generateItem).join('');
             
-            // NEW APPROACH: Add event listeners to the container
+            // NEW APPROACH: Add event listeners to container
             const container = track.parentElement;
             
             // Pause on mouseenter
@@ -627,17 +627,26 @@
                 observer.observe(card);
             });
 
-            // Mobile menu logic (Unchanged)
+            // Mobile menu logic (Updated)
             const menuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
 
             menuButton.addEventListener('click', () => {
                 mobileMenu.classList.toggle('hidden');
             });
+            
+            // Close menu when clicking on links
             mobileMenu.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', () => {
                     mobileMenu.classList.add('hidden');
                 });
+            });
+            
+            // Close menu when clicking outside
+            document.addEventListener('click', (event) => {
+                if (!mobileMenu.contains(event.target) && !menuButton.contains(event.target)) {
+                    mobileMenu.classList.add('hidden');
+                }
             });
         });
     </script>
@@ -673,12 +682,13 @@
             </div>
         </nav>
         
-        <div id="mobile-menu" class="hidden md:hidden bg-primary-dark shadow-xl border-t border-gray-700">
-            <nav class="flex flex-col space-y-1 px-4 py-3">
-                <a href="#hero" class="block py-2 px-3 text-text-muted hover:text-accent-indigo hover:bg-gray-800 rounded-md transition duration-300">Accueil</a>
-                <a href="#content" class="block py-2 px-3 text-text-muted hover:text-accent-indigo hover:bg-gray-800 rounded-md transition duration-300">Catalogue</a>
-                <a href="#test-iptv" class="block py-2 px-3 text-text-muted hover:text-accent-indigo hover:bg-gray-800 rounded-md transition duration-300">Test IPTV</a>
-                <a href="#pricing" class="block py-2 px-3 text-text-muted hover:text-accent-indigo hover:bg-gray-800 rounded-md transition duration-300">Tarifs</a>
+        <!-- FIXED: Mobile Menu with proper positioning and z-index -->
+        <div id="mobile-menu" class="hidden fixed inset-0 z-50 bg-primary-dark bg-opacity-95 shadow-xl">
+            <nav class="flex flex-col space-y-1 px-4 py-3 h-full">
+                <a href="#hero" class="block py-3 px-3 text-text-muted hover:text-accent-indigo hover:bg-gray-800 rounded-md transition duration-300">Accueil</a>
+                <a href="#content" class="block py-3 px-3 text-text-muted hover:text-accent-indigo hover:bg-gray-800 rounded-md transition duration-300">Catalogue</a>
+                <a href="#test-iptv" class="block py-3 px-3 text-text-muted hover:text-accent-indigo hover:bg-gray-800 rounded-md transition duration-300">Test IPTV</a>
+                <a href="#pricing" class="block py-3 px-3 text-text-muted hover:text-accent-indigo hover:bg-gray-800 rounded-md transition duration-300">Tarifs</a>
             </nav>
         </div>
 
@@ -752,10 +762,10 @@
                     Demandez Votre <span class="text-accent-indigo">Test IPTV 24H</span> Gratuit
                 </h2>
                 <p class="text-center text-lg text-text-muted mb-12 max-w-2xl mx-auto">
-                    Remplissez le formulaire ci-dessous et recevez votre accès test par e-mail. Découvrez la puissance de FrancyHostinger sans engagement.
+                    Contactez-nous directement pour recevoir votre accès test. Découvrez la puissance de FrancyHostinger sans engagement.
                 </p>
                 
-                <form class="max-w-xl mx-auto" onsubmit="handleTestForm(event)">
+                <div class="max-w-xl mx-auto">
                     <div class="mb-6">
                         <label for="name" class="block text-left text-text-muted font-medium mb-2">Votre Nom Complet</label>
                         <input type="text" id="name" name="name" class="w-full bg-primary-dark border border-gray-700/50 text-text-light text-lg rounded-lg focus:ring-accent-indigo focus:border-accent-indigo p-3.5 transition duration-300" placeholder="Jean Dupont" required>
@@ -768,10 +778,11 @@
                         <label for="email" class="block text-left text-text-muted font-medium mb-2">Votre Email</label>
                         <input type="email" id="email" name="email" class="w-full bg-primary-dark border border-gray-700/50 text-text-light text-lg rounded-lg focus:ring-accent-indigo focus:border-accent-indigo p-3.5 transition duration-300" placeholder="vous@exemple.com" required>
                     </div>
-                    <button type="submit" class="w-full bg-accent-indigo hover:bg-indigo-700 text-text-light text-xl font-bold py-4 px-10 rounded-xl transition duration-300 transform hover:scale-[1.02] shadow-xl shadow-accent-indigo/50">
-                        Commencer mon test
+                    
+                    <button onclick="handleTestRequest()" class="w-full bg-accent-indigo hover:bg-indigo-700 text-text-light text-xl font-bold py-4 px-10 rounded-xl transition duration-300 transform hover:scale-[1.02] shadow-xl shadow-accent-indigo/50">
+                        Envoyer ma demande de test
                     </button>
-                </form>
+                </div>
             </div>
         </section>
 
